@@ -1,7 +1,13 @@
+import {ThemeProvider} from '@sanity/ui'
+import {createElement} from 'react'
 import {definePlugin} from 'sanity'
+import {FieldProps} from 'sanity'
 
-interface aiInputConfig {
-  /* nothing here yet */
+import AIInput from './components/AIInput'
+
+interface AIInputConfig {
+  apiKey: string
+  prompt: string
 }
 
 /**
@@ -17,10 +23,25 @@ interface aiInputConfig {
  * })
  * ```
  */
-export const aiInput = definePlugin<aiInputConfig | void>((config = {}) => {
-  // eslint-disable-next-line no-console
-  console.log('hello from sanity-plugin-ai-input')
+export const aiInput = definePlugin<AIInputConfig>((config) => {
   return {
     name: 'sanity-plugin-ai-input',
+    schema: {
+      types: [
+        {
+          name: 'aiInput',
+          title: 'AI Input',
+          type: 'string',
+          components: {
+            input: (props: FieldProps) =>
+              createElement(
+                ThemeProvider,
+                {scheme: props.schemeTheme},
+                createElement(AIInput, {...props, pluginConfig: config}),
+              ),
+          },
+        },
+      ],
+    },
   }
 })
