@@ -17,6 +17,7 @@ interface ExtendedFieldProps {
   schemeTheme: string
   options: {
     prompt: string
+    reference?: string
   }
 }
 

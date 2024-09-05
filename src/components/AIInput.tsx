@@ -14,16 +14,15 @@ interface AIInputProps {
   pluginConfig: AIInputConfig
   options: {
     prompt: string
+    reference?: string
   }
 }
 
 export default function AIInput(props: AIInputProps): JSX.Element {
   const {onChange, value = '', pluginConfig, type, options} = props
-  const {prompt} = options
-
-  console.log('options', options)
-
-  const name = useFormValue(['name'])
+  const {prompt, reference} = options
+  const referenceValue = useFormValue(reference ? [reference] : [])
+  const fullPrompt = reference ? `${prompt} "${referenceValue}"` : prompt
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -47,7 +46,7 @@ export default function AIInput(props: AIInputProps): JSX.Element {
         },
         body: JSON.stringify({
           model: 'gpt-3.5-turbo',
-          messages: [{role: 'user', content: `${prompt} ${name}`}],
+          messages: [{role: 'user', content: fullPrompt}],
         }),
       })
       const data = await response.json()
