@@ -1,4 +1,4 @@
-import {Button, Stack, Text, TextArea} from '@sanity/ui'
+import {Button, Stack, TextArea} from '@sanity/ui'
 import React, {useCallback, useState} from 'react'
 import {set, unset, useFormValue} from 'sanity'
 
