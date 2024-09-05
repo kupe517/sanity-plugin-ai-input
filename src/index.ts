@@ -15,6 +15,9 @@ interface ExtendedFieldProps {
   value: string | undefined
   onChange: (value: any) => void
   schemeTheme: string
+  options: {
+    prompt: string
+  }
 }
 
 /**
@@ -45,10 +48,11 @@ export const aiInput = definePlugin<AIInputConfig>((config) => {
                 ThemeProvider,
                 {scheme: props.schemeTheme as 'light' | 'dark'},
                 createElement(AIInput, {
-                  type: props.schemaType.type,
+                  type: props.schemaType.name,
                   onChange: props.onChange,
                   value: props.value,
                   pluginConfig: config,
+                  options: props.schemaType.options,
                 }),
               ),
           },

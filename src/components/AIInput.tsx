@@ -1,4 +1,4 @@
-import {Button, Stack, TextArea} from '@sanity/ui'
+import {Button, Label, Stack, TextArea} from '@sanity/ui'
 import React, {useCallback, useState} from 'react'
 import {set, unset, useFormValue} from 'sanity'
 
@@ -12,15 +12,21 @@ interface AIInputProps {
   onChange: (value: any) => void
   value?: string
   pluginConfig: AIInputConfig
+  options: {
+    prompt: string
+  }
 }
 
 export default function AIInput(props: AIInputProps): JSX.Element {
-  const {onChange, value = '', pluginConfig, type} = props
+  const {onChange, value = '', pluginConfig, type, options} = props
+  const {prompt} = options
+
+  console.log('options', options)
 
   const name = useFormValue(['name'])
 
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const nextValue = event.currentTarget.value
       onChange(nextValue ? set(nextValue) : unset())
     },
@@ -41,7 +47,7 @@ export default function AIInput(props: AIInputProps): JSX.Element {
         },
         body: JSON.stringify({
           model: 'gpt-3.5-turbo',
-          messages: [{role: 'user', content: `${pluginConfig.prompt} ${name}`}],
+          messages: [{role: 'user', content: `${prompt} ${name}`}],
         }),
       })
       const data = await response.json()
@@ -63,6 +69,7 @@ export default function AIInput(props: AIInputProps): JSX.Element {
         onClick={generateDescription}
         loading={isLoading}
       />
+      <Label size={1}>Prompt: {prompt}</Label>
     </Stack>
   )
 }
