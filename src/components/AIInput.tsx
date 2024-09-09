@@ -1,15 +1,15 @@
 import {Button, Label, Stack, TextArea} from '@sanity/ui'
-import React, {useCallback, useState} from 'react'
-import {set, unset, useFormValue} from 'sanity'
+import React, {JSX, useCallback, useState} from 'react'
+import {FormSetPatch, FormUnsetPatch, set, unset, useFormValue} from 'sanity'
 
 interface AIInputConfig {
   apiKey: string
-  prompt?: string
+  aiModel?: string
 }
 
 interface AIInputProps {
   type?: string
-  onChange: (value: any) => void
+  onChange: (value: string | FormSetPatch | FormUnsetPatch) => void
   value?: string
   pluginConfig: AIInputConfig
   options: {
@@ -23,6 +23,7 @@ export default function AIInput(props: AIInputProps): JSX.Element {
   const {prompt, reference} = options
   const referenceValue = useFormValue(reference ? [reference] : [])
   const fullPrompt = reference ? `${prompt} "${referenceValue}"` : prompt
+  const aiModel = pluginConfig?.aiModel || 'gpt-3.5-turbo'
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -45,7 +46,7 @@ export default function AIInput(props: AIInputProps): JSX.Element {
           Authorization: `Bearer ${pluginConfig.apiKey}`,
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: aiModel,
           messages: [{role: 'user', content: fullPrompt}],
         }),
       })
@@ -65,10 +66,10 @@ export default function AIInput(props: AIInputProps): JSX.Element {
       <Button
         text="Generate Description"
         tone="primary"
-        onClick={generateDescription}
+        onClick={generateDescription} // eslint-disable-line
         loading={isLoading}
       />
-      <Label size={1}>Prompt: {prompt}</Label>
+      <Label size={1}>Prompt: {fullPrompt}</Label>
     </Stack>
   )
 }

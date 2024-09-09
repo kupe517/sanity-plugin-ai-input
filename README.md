@@ -18,8 +18,28 @@ import {aiInput} from 'sanity-plugin-ai-input'
 
 export default defineConfig({
   //...
-  plugins: [aiInput({})],
+  plugins: [
+    aiInput({
+      apiKey: 'your-openai-api-key',
+      aiModel: 'gpt-3.5-turbo', // Optional, defaults to 'gpt-3.5-turbo'
+    }),
+  ],
 })
+```
+
+## Use the AI input field in your schema:
+
+```ts
+{
+      name: 'description',
+      title: 'Description',
+      type: 'aiInput',
+      options: {
+        prompt:
+          'Generate a description for the following:',
+        reference: 'name', // Optional reference to another text field on the page which will be appended to the query
+      },
+    },
 ```
 
 ## License
